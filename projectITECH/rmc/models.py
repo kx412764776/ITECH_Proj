@@ -3,6 +3,7 @@ from django.db import models
 
 # (1) Table rmc_student
 class Student(models.Model):
+    email = models.CharField(verbose_name="Email", max_length=64, null=True, blank=True)
     name = models.CharField(verbose_name="Name", max_length=32)
     password = models.CharField(verbose_name="Password", max_length=64)
 
@@ -21,7 +22,7 @@ class Student(models.Model):
 # (2) Table rmc_course
 class Course(models.Model):
     name = models.CharField(verbose_name="Name", max_length=64)
-    associated_degree_programme = models.ManyToManyField(to="DegreeProgramme", related_name="associated_degree_programme")
+    associated_degree_programmes = models.ManyToManyField(to="DegreeProgramme", related_name="degree_programme_courses")
 
 
 # (3) Table rmc_coursereview
@@ -47,11 +48,12 @@ class DegreeProgramme(models.Model):
     )
     level = models.SmallIntegerField(verbose_name="Level", choices=level_choices)
 
-    programme_courses = models.ManyToManyField(to="Course", null=True, blank=True, related_name="programme_courses")
+    # programme_courses = models.ManyToManyField(to="Course", related_name="programme_courses")
 
 
 # (5) Table rmc_staff
 class Staff(models.Model):
+    email = models.CharField(verbose_name="Email", max_length=64, null=True, blank=True)
     name = models.CharField(verbose_name="Name", max_length=32)
     password = models.CharField(verbose_name="Password", max_length=64)
 

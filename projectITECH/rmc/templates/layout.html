@@ -51,11 +51,17 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li><a href="/student-list/">Students</a></li>
-                <li><a href="/#/">Courses<span class="sr-only">(current)</span></a></li>
-                <li><a href="/#/">Course reviews</a></li>
+                <li><a href="/#/">My info<span class="sr-only">(current)</span></a></li>
                 <li><a href="/#/">Data visualisation</a></li>
-
+                <li><a href="/course-management/">Course management</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">View reviews<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">View reviews by course</a></li>
+                        <li><a href="/student-list/">View reviews by student</a></li>
+                    </ul>
+                </li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">

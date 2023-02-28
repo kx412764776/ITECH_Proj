@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+
+    <div class="container">
+
+        <!-- (1) Panel showing the rmc_course table -->
+        <div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                    Course list
+                </div>
+                <div class="panel-body">
+                    <p>All courses are listed as follows:</p>
+                </div>
+
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Course name</th>
+                        <th>Associated degree programmes</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <!-- (2) Receives data from the back-end -->
+                    {% for course in courses %}
+                        <tr>
+                            <th scope="row">{{ course.id }}</th>
+                            <td>{{ course.name }}</td>
+                            <td>
+                                {% for degree_programme in course.associated_degree_programmes.all %}
+                                    {{ degree_programme.name }}
+                                    {% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+
