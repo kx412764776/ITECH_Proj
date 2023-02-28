@@ -1,3 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from rmc import models
 
-# Create your views here.
+
+def student_list(request):
+    # Gets all the data in the rmc_student
+    queryset = models.Student.objects.all()
+
+    # Sends the queryset to the front-end
+    return render(request, "student-list.html", {"queryset": queryset})
+
+
+
+
