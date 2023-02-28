@@ -1,7 +1,7 @@
 from django.db import models
 
 
-# (1) Table student
+# (1) Table rmc_student
 class Student(models.Model):
     name = models.CharField(verbose_name="Name", max_length=32)
     password = models.CharField(verbose_name="Password", max_length=64)
@@ -15,16 +15,16 @@ class Student(models.Model):
     age = models.IntegerField(verbose_name="Age")
     entry_date = models.DateField(verbose_name="Date of entry")
 
-    degree_programme = models.ForeignKey(to="DegreeProgramme", to_field="id", on_delete=models.CASCADE)
+    degree_programme = models.ForeignKey(to="DegreeProgramme", to_field="name", on_delete=models.CASCADE)
 
 
-# (2) Table course
+# (2) Table rmc_course
 class Course(models.Model):
     name = models.CharField(verbose_name="Name", max_length=64)
     associated_degree_programme = models.ManyToManyField(to="DegreeProgramme", related_name="associated_degree_programme")
 
 
-# (3) Table coursereview
+# (3) Table rmc_coursereview
 class CourseReview(models.Model):
     student_id = models.ForeignKey(to="Student", to_field="id", on_delete=models.CASCADE)
     course_id = models.ForeignKey(to="Course", to_field="id", on_delete=models.CASCADE)
@@ -38,20 +38,20 @@ class CourseReview(models.Model):
     comment = models.CharField(max_length=300, default='')
 
 
-# (4) Table degreeprogramme
+# (4) Table rmc_degreeprogramme
 class DegreeProgramme(models.Model):
-    name = models.CharField(verbose_name="Degree programme name", max_length=32)
+    name = models.CharField(verbose_name="Degree programme name", max_length=32, unique=True)
     level_choices = (
         (1, "Undergraduate"),
         (2, "Postgraduate"),
     )
     level = models.SmallIntegerField(verbose_name="Level", choices=level_choices)
 
-    programme_courses = models.ManyToManyField(to="Course", related_name="programme_courses")
+    programme_courses = models.ManyToManyField(to="Course", null=True, blank=True, related_name="programme_courses")
 
 
-# (5) Table staff
-class Degree(models.Model):
+# (5) Table rmc_staff
+class Staff(models.Model):
     name = models.CharField(verbose_name="Name", max_length=32)
     password = models.CharField(verbose_name="Password", max_length=64)
 
