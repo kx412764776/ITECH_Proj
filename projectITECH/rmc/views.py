@@ -24,7 +24,6 @@ def course_management(request):
 
 
 
-
 class CourseModelForm(BootStrapModelForm):
     class Meta:
         model = models.Course
@@ -56,6 +55,37 @@ def course_add(request):
         return render(request, "course-add.html", {"form": form})
 
 
+def course_edit(request, courseid):
+    # (1) Receives the course ID via URL
+    # http://127.0.0.1:8000/1/course-edit/
+
+    # (2.1) Gets the existing data from the database according to the course ID
+    row_object = models.Course.objects.filter(id=courseid).first()
+
+    # (2) Calls the html page and passes the database data if a GET request is received
+    if request.method == "GET":
+        # (2.1) Gets the existing data from the database according to the course ID
+        # row_object = models.Course.objects.filter(id=courseid).first()
+
+        # (2.2) Instantiates a ModelForm object and passes the existing database data
+        form = CourseModelForm(instance=row_object)
+
+        # (2.3) Sends the ModelForm instance to the front-end
+        return render(request, "course-edit.html", {"form": form})
+
+    # (3) Gets the user input (a ModelForm instance) from the front-end POST request,
+    # and updates the existing database data
+    # row_object = models.Course.objects.filter(id=courseid).first()
+    form = CourseModelForm(data=request.POST, instance=row_object)
+
+    # (4) Validates the user input
+    if form.is_valid():
+        # Saves the user input into the database
+        form.save()
+        return redirect("/course-management/")
+
+    # (5) Sends the error messages to the front-end
+    return render(request, "course-edit.html", {"form": form})
 
 
 

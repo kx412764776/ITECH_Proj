@@ -29,6 +29,7 @@
                         <th>ID</th>
                         <th>Course name</th>
                         <th>Associated degree programmes</th>
+                        <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -43,6 +44,12 @@
                                     {{ degree_programme.name }}
                                     {% if not forloop.last %}, {% endif %}
                                 {% endfor %}
+                            </td>
+
+                            <td>
+                                <a class="btn btn-primary btn-xs" href="/{{ obj.id }}/course-edit/">Edit</a>
+                                <a class="btn btn-danger btn-xs"
+                                   href="/{{ obj.id }}/course-delete/">Delete</a>
                             </td>
                         </tr>
                     {% endfor %}
