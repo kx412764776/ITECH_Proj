@@ -16,4 +16,12 @@ urlpatterns = [
     ########################################
 
     path("student-list/", views.student_list),
+
+    # Student Pages
+    path("student/info/", views.student_info),
+    path('student/edit/', views.user_edit),
+
+    # login and logout
+    path("login/", views.login),
+    path('logout/', views.logout),
 ]
