@@ -1,7 +1,12 @@
+from io import BytesIO
+
+from django import forms
 from django.shortcuts import render, redirect
+
 from rmc import models
-from rmc.utils.bootstrap import BootStrapModelForm
+from rmc.utils.bootstrap import BootStrapModelForm, BootStrapForm
 from rmc.utils.pagination import Pagination
+from rmc.utils.encrypt import md5
 
 
 ########################################
@@ -186,6 +191,99 @@ def admin_list(request):
 
 
 
+
+
+def student_info(request):
+    info = request.session["info"]
+
+    # Get the data in rmc_student based on the login ID
+    student = models.Student.objects.get(email=info['email'])
+    stu_info = {
+        "email": student.email,
+        "name": student.name,
+        "gender": student.get_gender_display(),
+        "age": student.age,
+        "entry_date": student.entry_date.strftime("%Y-%m-%d"),
+        "degree_programme": student.degree_programme.name,
+    }
+    return render(request, "student_info.html", {"stu_info": stu_info})
+
+
+class StudentInfoModelForm(BootStrapModelForm):
+    class Meta:
+        model = models.Student
+        fields = ['name', 'gender', 'age']
+
+
+def user_edit(request):
+    """ Edit Student Profile """
+    info = request.session["info"]
+    student = models.Student.objects.filter(id=info['id']).first()
+
+    if request.method == "GET":
+        # 根据ID去数据库获取要编辑的那一行数据（对象）
+        form = StudentInfoModelForm(instance=student)
+
+        return render(request, 'student_edit.html', {"form": form})
+
+    form = StudentInfoModelForm(data=request.POST, instance=student)
+    if form.is_valid():
+        # 默认保存的是用户输入的所有数据，如果想要再用户输入以外增加一点值
+        # form.instance.字段名 = 值
+        form.save()
+        return redirect('/student/info/')
+    return render(request, 'student_edit.html', {"form": form})
+
+
+class LoginForm(BootStrapForm):
+    email = forms.CharField(
+        label="email",
+        widget=forms.TextInput,
+        required=True
+    )
+    password = forms.CharField(
+        label="password",
+        widget=forms.PasswordInput(render_value=True),
+        required=True
+    )
+
+    # def clean_password(self):
+    #     pwd = self.cleaned_data.get("password")
+    #     return md5(pwd)
+
+
+def login(request):
+    """ 登录 """
+    if request.method == "GET":
+        form = LoginForm()
+        return render(request, 'login.html', {'form': form})
+
+    form = LoginForm(data=request.POST)
+    if form.is_valid():
+
+        # 去数据库校验用户名和密码是否正确，获取用户对象、None
+        user_object = models.Student.objects.filter(**form.cleaned_data).first()
+        if not user_object:
+            form.add_error("password", "email or password error")
+            return render(request, 'login.html', {'form': form})
+
+        # 用户名和密码正确
+        # 网站生成随机字符串; 写到用户浏览器的cookie中；在写入到session中；
+        request.session["info"] = {'id': user_object.id, 'email': user_object.email}
+        # session可以保存7天
+        request.session.set_expiry(60 * 60 * 24 * 7)
+
+        return redirect("/student/info/")
+
+    return render(request, 'login.html', {'form': form})
+
+
+def logout(request):
+    """ 注销 """
+
+    request.session.clear()
+
+    return redirect('/login/')
 
 
 
