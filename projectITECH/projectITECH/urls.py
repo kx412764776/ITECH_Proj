@@ -22,4 +22,14 @@ urlpatterns = [
     path("student-list/", views.student_list),
     path("<int:studentid>/view-reviews-student/", views.view_reviews_student),
 
+    ########################################
+
+    path("login/", views.login),
+    path("logout/", views.logout),
+
+    ########################################
+
+    path("student/info/", views.student_info),
+    path("student/edit/", views.user_edit),
+
 ]
