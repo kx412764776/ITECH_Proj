@@ -4,6 +4,13 @@
 {% block content %}
 
     <div class="container">
+        <!-- (5) New button -->
+        <div class="new-btn-area">
+            <a class="btn btn-primary" href="/course-add/">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                New
+            </a>
+        </div>
 
         <!-- (1) Panel showing the rmc_course table -->
         <div>
@@ -27,12 +34,12 @@
                     <tbody>
 
                     <!-- (2) Receives data from the back-end -->
-                    {% for course in courses %}
+                    {% for obj in queryset %}
                         <tr>
-                            <th scope="row">{{ course.id }}</th>
-                            <td>{{ course.name }}</td>
+                            <th scope="row">{{ obj.id }}</th>
+                            <td>{{ obj.name }}</td>
                             <td>
-                                {% for degree_programme in course.associated_degree_programmes.all %}
+                                {% for degree_programme in obj.associated_degree_programmes.all %}
                                     {{ degree_programme.name }}
                                     {% if not forloop.last %}, {% endif %}
                                 {% endfor %}
@@ -45,6 +52,12 @@
             </div>
         </div>
 
+        <!-- (3) Pagination -->
+        <div class="clearfix">
+            <ul class="pagination">
+                {{ tpl_pagination_navbar }}
+            </ul>
+        </div>
     </div>
 
 {% endblock %}

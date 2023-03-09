@@ -50,6 +50,11 @@ class DegreeProgramme(models.Model):
 
     # programme_courses = models.ManyToManyField(to="Course", related_name="programme_courses")
 
+    # The following code is used to improve the ModelForm implementation
+    # so that the degree names are displayed on the front-end instead of the object names
+    def __str__(self):
+        return self.name
+
 
 # (5) Table rmc_staff
 class Staff(models.Model):
