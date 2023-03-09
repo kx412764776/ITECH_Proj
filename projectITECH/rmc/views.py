@@ -88,6 +88,10 @@ def course_edit(request, courseid):
     return render(request, "course-edit.html", {"form": form})
 
 
+def course_delete(request, courseid):
+    models.Course.objects.filter(id=courseid).delete()
+    return redirect("/course-management/")
+
 
 
 
