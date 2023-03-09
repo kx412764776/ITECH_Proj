@@ -4,6 +4,8 @@ from rmc.utils.bootstrap import BootStrapModelForm
 from rmc.utils.pagination import Pagination
 
 
+########################################
+
 def course_management(request):
     # Gets all the data in the rmc_course
     # associated_degree_programmes = models.ManyToManyField(to="DegreeProgramme", related_name="degree_programme_courses")
@@ -21,7 +23,6 @@ def course_management(request):
 
     # Sends the queryset to the front-end
     return render(request, "course-management.html", contents)
-
 
 
 class CourseModelForm(BootStrapModelForm):
@@ -92,16 +93,98 @@ def course_delete(request, courseid):
     models.Course.objects.filter(id=courseid).delete()
     return redirect("/course-management/")
 
-
-
-
+########################################
 
 def student_list(request):
     # Gets all the data in the rmc_student
-    queryset = models.Student.objects.all()
+    students = models.Student.objects.all()
+
+    pagination_object = Pagination(request, students)
+
+    contents = {
+        # Organises the retrieved data with pagination
+        "queryset": pagination_object.queryset_page,
+
+        # Generates front-end code for pagination
+        "tpl_pagination_navbar": pagination_object.tpl(),
+    }
 
     # Sends the queryset to the front-end
-    return render(request, "student-list.html", {"queryset": queryset})
+    return render(request, "student-list.html", contents)
+
+
+def view_reviews_student(request, studentid):
+    # (1) Receives the student ID via URL
+    # http://127.0.0.1:8000/1/view-reviews-student/
+
+    # (2) Gets the existing data from the database according to the student ID
+    reviews = models.CourseReview.objects.filter(student_id=studentid)
+
+    # (3) Extracts the student name from the queryset for display
+    for row in reviews:
+        student_name = row.student_id.name
+
+    pagination_object = Pagination(request, reviews)
+
+    contents = {
+        "student_name": student_name,
+
+        # Organises the retrieved data with pagination
+        "queryset": pagination_object.queryset_page,
+
+        # Generates front-end code for pagination
+        "tpl_pagination_navbar": pagination_object.tpl(),
+    }
+
+    # (4) Sends the queryset to the front-end
+    return render(request, "view-reviews-student.html", contents)
+
+
+
+
+
+
+
+
+
+
+# def staff_info(request, staffid):
+#     queryset = models.Staff.objects.filter(id=staffid).first()
+#
+#     return render(request, "staff-info.html", queryset)
+
+
+
+
+
+
+def admin_list(request):
+        # queryset = models.Admin.objects.all()
+
+        ########################################
+        # Search box
+        data_dict = {}
+        search_data = request.GET.get("search", "")
+        if search_data:
+            data_dict["username__contains"] = search_data
+
+        queryset = models.Admin.objects.filter(**data_dict)
+        ########################################
+        # Pagination
+        pagination_object = Pagination(request, queryset)
+
+        context = {
+            "search_data": search_data,
+            "queryset": pagination_object.queryset_page,
+            "tpl_pagination_navbar": pagination_object.tpl(),
+        }
+        ########################################
+
+        return render(request, "admin-list.html", context)
+
+
+
+
 
 
 

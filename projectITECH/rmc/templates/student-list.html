@@ -27,6 +27,7 @@
                         <th>Age</th>
                         <th>Entry year</th>
                         <th>Degree programme</th>
+                        <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -42,6 +43,10 @@
                             <td>{{ obj.age }}</td>
                             <td>{{ obj.entry_date|date:"Y" }}</td>
                             <td>{{ obj.degree_programme.name }}</td>
+
+                            <td>
+                                <a class="btn btn-success btn-xs" href="/{{ obj.id }}/view-reviews-student/">View reviews</a>
+                            </td>
                         </tr>
                     {% endfor %}
 
