@@ -304,6 +304,14 @@ def staff_login(request):
 
     return render(request, "staff-login.html", {"form": form})
 
+def logout(request):
+    request.session.clear()
+    return redirect("/login/")
+
+def staff_logout(request):
+    request.session.clear()
+    return redirect("/staff-login/")
+
 ########################################
 
 class StudentRegistrationModelForm(BootStrapModelForm):
@@ -547,12 +555,7 @@ def user_edit(request):
 #     return render(request, 'login.html', {'form': form})
 
 
-def logout(request):
-    """ 注销 """
 
-    request.session.clear()
-
-    return redirect('/student-login/')
 
 
 
