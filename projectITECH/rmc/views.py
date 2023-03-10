@@ -228,7 +228,7 @@ def student_login(request):
 
         # (3) If authentication passes
         #     Creates a session for the user
-        request.session["info"] = {"id": student_object.id, "email": student_object.email}
+        request.session["info"] = {"id": student_object.id, "email": student_object.email, "name": student_object.name}
 
         # Resets the expiry time (1 day) for re-login
         request.session.set_expiry(60*60*24)
@@ -295,7 +295,7 @@ def staff_login(request):
 
         # (3) If authentication passes
         #     Creates a session for the user
-        request.session["info"] = {"id": staff_object.id, "email": staff_object.email}
+        request.session["info"] = {"id": staff_object.id, "email": staff_object.email, "name": staff_object.name}
 
         # Resets the expiry time (1 day) for re-login
         request.session.set_expiry(60*60*24)
