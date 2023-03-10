@@ -104,9 +104,21 @@ def student_list(request):
     # Gets all the data in the rmc_student
     students = models.Student.objects.all()
 
+    # Gets all the students who have made the course reviews
+    students_review = models.CourseReview.objects.all().values("student_id").distinct()
+    # students_review = models.CourseReview.objects.all().values("student_id",
+    #                                                     "student_id__email",
+    #                                                     "student_id__name",
+    #                                                     "student_id__gender",
+    #                                                     "student_id__age",
+    #                                                     "student_id__entry_date",
+    #                                                     "student_id__degree_programme__name")
+
     pagination_object = Pagination(request, students)
 
     contents = {
+        "students_review": students_review,
+
         # Organises the retrieved data with pagination
         "queryset": pagination_object.queryset_page,
 
