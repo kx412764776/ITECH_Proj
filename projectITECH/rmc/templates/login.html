@@ -6,41 +6,80 @@
     <title>Title</title>
     <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1-dist/css/bootstrap.min.css' %}">
     <style>
-        .account {
+        .login-box {
             width: 400px;
-            border: 1px solid #dddddd;
+            height: 450px;
+            border: 1px solid grey;
             border-radius: 5px;
-            box-shadow: 5px 5px 20px #aaa;
 
             margin-left: auto;
             margin-right: auto;
-            margin-top: 100px;
+            margin-top: 200px;
+            margin-bottom: 200px;
+
             padding: 20px 40px;
+
+            box-shadow: 5px 5px 20px grey;
         }
 
-        .account h2 {
-            margin-top: 10px;
+        .login-box h2 {
             text-align: center;
+        }
+
+        .login-box button {
+            margin-top: 15px;
+        }
+
+        .hyperlink{
+            margin-top: 15px;
+        }
+
+        .register{
+            float: left;
+        }
+
+        .staff-login{
+            float: right;
         }
     </style>
 </head>
 <body>
-<div class="account">
-    <h2>User Log in</h2>
-    <form method="post" novalidate>
+<div class="login-box">
+    <h2>Login</h2>
+    <form method="post">
         {% csrf_token %}
         <div class="form-group">
             <label>Email</label>
             {{ form.email }}
-            <span style="color: red;">{{ form.email.errors.0 }}</span>
         </div>
+
         <div class="form-group">
             <label>Password</label>
             {{ form.password }}
-            <span style="color: red;">{{ form.password.errors.0 }}</span>
+            <span>{{ form.password.errors.0 }}</span>
         </div>
-        <input type="submit" value="Log in" class="btn btn-primary">
+
+        <div>
+            <label for="digit_code">Verification code</label>
+            <div class="row">
+                <div class="col-xs-7">
+                    {{ form.verification_code }}
+                    <span>{{ form.verification_code.errors.0 }}</span>
+                </div>
+                <div class="col-xs-5">
+                    <img id="image_code" src="/captcha/">
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Login</button>
+
     </form>
+
+    <div class="hyperlink">
+        <span class="register"><a href="/student-registration/">Register</a></span>
+        <span class="staff-login"><a href="#">Staff Login</a></span>
+    </div>
 </div>
 
 </body>

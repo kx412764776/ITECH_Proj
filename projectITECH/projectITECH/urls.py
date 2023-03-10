@@ -24,8 +24,12 @@ urlpatterns = [
 
     ########################################
 
-    path("login/", views.login),
+    path("captcha/", views.captcha),
+    path("login/", views.student_login),
+    # path("staff-login/", views.staff_login),
     path("logout/", views.logout),
+
+    path("registration/", views.student_registration),
 
     ########################################
 
