@@ -237,6 +237,73 @@ def student_login(request):
 
     return render(request, "login.html", {"form": form})
 
+class StaffLoginModelForm(BootStrapModelForm):
+
+    # Email and password must not be empty
+    email = forms.CharField(
+        label="Email",
+        required=True,
+    )
+    password = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput,
+        required=True,
+    )
+
+    # Verification code
+    verification_code = forms.CharField(
+        label="Verification code",
+        widget=forms.TextInput,
+        required=True,
+    )
+
+    class Meta:
+        model = models.Staff
+        fields = ["email", "password"]
+
+    # For password authentication
+    # Encrypts user input using md5
+    def clean_password(self):
+        pwd = self.cleaned_data.get("password")
+        return md5(pwd)
+
+def staff_login(request):
+
+    if request.method == "GET":
+        form = StaffLoginModelForm()
+        return render(request, "staff-login.html", {"form": form})
+
+    form = StaffLoginModelForm(data=request.POST)
+    if form.is_valid():
+
+        # CAPTCHA test, before user authentication
+        vcode_user_input = form.cleaned_data.pop("verification_code")
+        vcode = request.session.get("captcha", "")
+        if vcode.upper() != vcode_user_input.upper():
+            form.add_error("verification_code", "Wrong verification code")
+            return render(request, "staff-login.html", {"form": form})
+
+        # User authentication
+        # (1) Retrieves existing student objects from the database
+        staff_object = models.Staff.objects.filter(**form.cleaned_data).first()
+
+        # (2) If authentication fails
+        if not staff_object:
+            # Reports the error
+            form.add_error("password", "Incorrect email or password")
+            return render(request, "staff-login.html", {"form": form})
+
+        # (3) If authentication passes
+        #     Creates a session for the user
+        request.session["info"] = {"id": staff_object.id, "email": staff_object.email}
+
+        # Resets the expiry time (1 day) for re-login
+        request.session.set_expiry(60*60*24)
+
+        return redirect("/course-management/")
+
+    return render(request, "staff-login.html", {"form": form})
+
 ########################################
 
 class StudentRegistrationModelForm(BootStrapModelForm):
@@ -310,6 +377,74 @@ def student_registration(request):
             form.add_error("email", "This email already exists.")
 
     return render(request, "registration.html", {"form": form})
+
+class StaffRegistrationModelForm(BootStrapModelForm):
+
+    email = forms.CharField(
+        label="Email",
+        widget=forms.EmailInput,
+        required=True,
+    )
+    password = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput(render_value=True),
+        required=True,
+    )
+    confirm_password = forms.CharField(
+        label="Confirm password",
+        widget=forms.PasswordInput,
+        required=True,
+    )
+
+    class Meta:
+        model = models.Staff
+        fields = ["email", "name", "password", "confirm_password", "gender"]
+        widgets = {
+            "password": forms.PasswordInput,
+        }
+
+    # Encrypts the password first
+    def clean_password(self):
+        pwd = self.cleaned_data.get("password")
+        return md5(pwd)
+
+    # Then, verifies that the password entered twice is the same
+    def clean_confirm_password(self):
+        pwd = self.cleaned_data.get("password")
+        confirm_pwd = md5(self.cleaned_data.get("confirm_password"))
+        if confirm_pwd != pwd:
+            raise ValidationError("Password and confirm password does not match.")
+
+        return confirm_pwd
+
+def staff_registration(request):
+    # (1) Calls the html page and passes the database data if a GET request is received
+    if request.method == "GET":
+        form = StaffRegistrationModelForm()
+        return render(request, "staff-registration.html", {"form": form})
+
+    # (2) Gets the user input (a ModelForm instance) from the front-end POST request
+    form = StaffRegistrationModelForm(data=request.POST)
+
+    # (3) Validates the email
+    if form.is_valid():
+        # Verifies that the email exists
+        obj_email = models.Staff.objects.filter(email=form.cleaned_data.get("email")).first()
+
+        if not obj_email:
+            # Creates a new staff
+            models.Staff.objects.create(email = form.cleaned_data.get("email"),
+                                          name = form.cleaned_data.get("name"),
+                                          password = form.cleaned_data.get("password"),
+                                          gender = form.cleaned_data.get("gender"))
+
+            return redirect("/staff-login/")
+
+        # Reports an error if the email exists
+        else:
+            form.add_error("email", "This email already exists.")
+
+    return render(request, "staff-registration.html", {"form": form})
 
 ########################################
 

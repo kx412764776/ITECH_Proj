@@ -8,7 +8,7 @@ class AuthMiddleware(MiddlewareMixin):
         # (1) If requesting the login page, continue
         #     Gets the URL of the user request, request.path_info
         # if request.path_info == "/login/":
-        if request.path_info in ["/login/", "/admin/", "/registration/", "/captcha/",]:
+        if request.path_info in ["/login/", "/staff-login/", "/admin/", "/registration/", "/staff-registration/", "/captcha/",]:
             return
 
         # (2) If the session info can be found in the database,
