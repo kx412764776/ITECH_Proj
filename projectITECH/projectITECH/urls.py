@@ -22,6 +22,9 @@ urlpatterns = [
     path("student-list/", views.student_list),
     path("<int:studentid>/view-reviews-student/", views.view_reviews_student),
 
+    path("course-list/", views.course_list),
+    path("<int:courseid>/view-reviews-course/", views.view_reviews_course),
+
     ########################################
 
     path("captcha/", views.captcha),

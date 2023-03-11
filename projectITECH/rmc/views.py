@@ -159,6 +159,57 @@ def view_reviews_student(request, studentid):
 
 ########################################
 
+def course_list(request):
+    # Gets all the data in the rmc_course
+    courses = models.Course.objects.all()
+
+    # Gets all the courses who have the course reviews
+    courses_review = models.CourseReview.objects.all().values("course_id").distinct()
+
+    pagination_object = Pagination(request, courses)
+
+    contents = {
+        "courses_review": courses_review,
+
+        # Organises the retrieved data with pagination
+        "queryset": pagination_object.queryset_page,
+
+        # Generates front-end code for pagination
+        "tpl_pagination_navbar": pagination_object.tpl(),
+    }
+
+    # Sends the queryset to the front-end
+    return render(request, "course-list.html", contents)
+
+
+def view_reviews_course(request, courseid):
+    # (1) Receives the student ID via URL
+    # http://127.0.0.1:8000/1/view-reviews-course/
+
+    # (2) Gets the existing data from the database according to the student ID
+    reviews = models.CourseReview.objects.filter(course_id=courseid)
+
+    # (3) Extracts the course name from the queryset for display
+    for row in reviews:
+        course_name = row.course_id.name
+
+    pagination_object = Pagination(request, reviews)
+
+    contents = {
+        "course_name": course_name,
+
+        # Organises the retrieved data with pagination
+        "queryset": pagination_object.queryset_page,
+
+        # Generates front-end code for pagination
+        "tpl_pagination_navbar": pagination_object.tpl(),
+    }
+
+    # (4) Sends the queryset to the front-end
+    return render(request, "view-reviews-course.html", contents)
+
+########################################
+
 # def staff_info(request, staffid):
 #     queryset = models.Staff.objects.filter(id=staffid).first()
 #
