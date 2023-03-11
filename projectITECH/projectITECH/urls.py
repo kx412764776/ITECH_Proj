@@ -39,7 +39,8 @@ urlpatterns = [
     ########################################
 
     path("data-visualisation/", views.data_visualisation),
-    path("data-visualisation/gender_distribution_socs/", views.gender_distribution_socs),
+    path("data-visualisation/gender-distribution-socs/", views.gender_distribution_socs),
+    path("data-visualisation/degree-programme-enrolment/", views.degree_programme_enrolment),
 
     ########################################
 

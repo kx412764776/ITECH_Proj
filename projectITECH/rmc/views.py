@@ -607,10 +607,35 @@ def gender_distribution_socs(request):
     return HttpResponse(page.render_embed())
 
 
+def degree_programme_enrolment(request):
+    page = Page(layout=Page.SimplePageLayout)
 
+    degree_programmes = models.DegreeProgramme.objects.all()
 
+    degree_programme_names = []
+    for i in degree_programmes:
+        degree_programme_names.append(i.name)
 
+    student_cs_count = models.Student.objects.filter(degree_programme="Computing Science MSc").count()
+    student_ds_count = models.Student.objects.filter(degree_programme="Data Science MSc").count()
+    student_it_count = models.Student.objects.filter(degree_programme="Information Technology MSc").count()
+    student_sd_count = models.Student.objects.filter(degree_programme="Software Development MSc").count()
 
+    student_count_list = [student_cs_count, student_ds_count, student_it_count, student_sd_count]
+
+    # Creates a grid layout
+    grid = Grid(init_opts=opts.InitOpts(theme=ThemeType.WESTEROS,))
+
+    # Creates a bar chart
+    bar = Bar()
+
+    bar.add_xaxis(degree_programme_names)
+    bar.add_yaxis("Number of Students Enrolled", student_count_list)
+    bar.set_global_opts(xaxis_opts=opts.AxisOpts(name_rotate=60, axislabel_opts={"rotate": 15}))
+
+    grid.add(bar, grid_opts=opts.GridOpts(pos_right="0%"))
+    page.add(grid)
+    return HttpResponse(page.render_embed())
 
 ########################################
 
