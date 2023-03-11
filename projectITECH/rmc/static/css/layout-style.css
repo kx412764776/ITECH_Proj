@@ -1,0 +1,16 @@
+.navbar {
+    border-radius: 0;
+}
+
+.new-btn-area {
+    margin-bottom: 10px;
+}
+
+.errors {
+    color: red;
+}
+
+.search-box {
+    float: right;
+    width: 300px;
+}
