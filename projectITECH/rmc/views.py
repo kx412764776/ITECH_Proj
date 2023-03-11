@@ -375,6 +375,64 @@ def staff_logout(request):
     request.session.clear()
     return redirect("/staff-login/")
 
+
+class StaffResetModelForm(BootStrapModelForm):
+    confirm_password = forms.CharField(
+        label="Confirm password",
+        widget=forms.PasswordInput,
+    )
+
+    class Meta:
+        model = models.Staff
+        fields = ["password", "confirm_password"]
+        widgets = {
+            "password": forms.PasswordInput,
+        }
+
+    # Encrypts the password first
+    def clean_password(self):
+        pwd = self.cleaned_data.get("password")
+        md5_pwd = md5(pwd)
+
+        # Compares the user input with the existing password
+        # and report an error if it matches, otherwise save the user input as the new password
+        exists = models.Staff.objects.filter(id=self.instance.pk, password=md5_pwd).exists()
+        if exists:
+            raise ValidationError("The new password should not be the same as the old one.")
+
+        return md5_pwd
+
+    # Then, verifies that the password entered twice is the same
+    def clean_confirm_password(self):
+        pwd = self.cleaned_data.get("password")
+        confirm_pwd = md5(self.cleaned_data.get("confirm_password"))
+        if confirm_pwd != pwd:
+            raise ValidationError("The confirm password does not match the password.")
+
+        return confirm_pwd
+
+def staff_reset(request, staffid):
+
+    # Verifies that the id in the url path is valid
+    row_object = models.Staff.objects.filter(id=staffid).first()
+    if not row_object:
+        return redirect("/course-management")
+
+    title = "Reset password for {}".format(row_object.name)
+
+    # Returns input boxes according to the database table structure
+    if request.method == "GET":
+        form = StaffResetModelForm()
+        return render(request, "reset-password.html", {"form": form, "title": title})
+
+    # Verifies the user input and saves
+    form = StaffResetModelForm(data=request.POST, instance=row_object)
+    if form.is_valid():
+        form.save()
+        return redirect("/course-management/")
+
+    return render(request, "reset-password.html", {"form": form, "title": title})
+
 ########################################
 
 class StudentRegistrationModelForm(BootStrapModelForm):

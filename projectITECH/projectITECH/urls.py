@@ -8,7 +8,7 @@ urlpatterns = [
 
     ########################################
 
-    # path("<int:staffid>/staff-info/", admin.staff_info),
+    path("<int:staffid>/staff-reset/", views.staff_reset),
 
     ########################################
 
