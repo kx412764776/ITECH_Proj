@@ -38,6 +38,11 @@ urlpatterns = [
 
     ########################################
 
+    path("data-visualisation/", views.data_visualisation),
+    path("data-visualisation/gender_distribution_socs/", views.gender_distribution_socs),
+
+    ########################################
+
     path("student/info/", views.student_info),
     path("student/edit/", views.user_edit),
 

@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, HttpResponse
 from django import forms
+
 from rmc import models
 from rmc.utils.bootstrap import BootStrapModelForm
 from rmc.utils.pagination import Pagination
@@ -8,6 +9,10 @@ from rmc.utils.encrypt import md5
 
 from rmc.utils.captcha import check_code
 from io import BytesIO
+
+from pyecharts import options as opts
+from pyecharts.charts import Page, Grid, Bar, Pie
+from pyecharts.globals import ThemeType
 
 ########################################
 
@@ -576,6 +581,43 @@ def staff_registration(request):
     return render(request, "staff-registration.html", {"form": form})
 
 ########################################
+
+def data_visualisation(request):
+    return render(request, "data-visualisation.html")
+
+
+def gender_distribution_socs(request):
+    page = Page(layout=Page.SimplePageLayout)
+
+    student_male_count = models.Student.objects.filter(gender=1).count()
+    student_female_count = models.Student.objects.filter(gender=2).count()
+
+    # Creates a grid layout
+    grid = Grid(init_opts=opts.InitOpts(theme=ThemeType.INFOGRAPHIC))
+
+    # Creates a pie chart
+    pie = Pie()
+    pie.set_global_opts(title_opts=opts.TitleOpts(title="Gender Distribution in SoCS", subtitle=""))
+
+    pie.add("", list(zip(["Male", "Female"], [student_male_count, student_female_count])))
+    pie.set_series_opts(label_opts=opts.LabelOpts(formatter="{b}:{c}\n{d}%)"))
+
+    grid.add(pie, grid_opts=opts.GridOpts(pos_right="0%"))
+    page.add(grid)
+    return HttpResponse(page.render_embed())
+
+
+
+
+
+
+
+########################################
+
+
+
+
+
 
 
 
