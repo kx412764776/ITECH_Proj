@@ -307,7 +307,7 @@ def student_login(request):
         # Resets the expiry time (1 day) for re-login
         request.session.set_expiry(60 * 60 * 24)
 
-        return redirect("/student/info/")
+        return redirect("/student-info/")
 
     return render(request, "login.html", {"form": form})
 
@@ -665,7 +665,7 @@ def student_info(request):
         "entry_date": student.entry_date.strftime("%Y-%m-%d"),
         "degree_programme": student.degree_programme.name,
     }
-    return render(request, "student_info.html", {"stu_info": stu_info})
+    return render(request, "student-info.html", {"stu_info": stu_info})
 
 
 class StudentInfoModelForm(BootStrapModelForm):
@@ -683,14 +683,14 @@ def student_edit(request):
         # Retrieve the row of data to be edited from the database based on the ID
         form = StudentInfoModelForm(instance=student)
 
-        return render(request, 'student_edit.html', {"form": form})
+        return render(request, 'student-edit.html', {"form": form})
 
     # Get the user input (a ModelForm instance) from the front-end POST request
     form = StudentInfoModelForm(data=request.POST, instance=student)
     if form.is_valid():
         form.save()
-        return redirect('/student/info/')
-    return render(request, 'student_edit.html', {"form": form})
+        return redirect('/student-info/')
+    return render(request, 'student-edit.html', {"form": form})
 
 
 class AddCommentModelForm(BootStrapModelForm):
@@ -750,7 +750,7 @@ def student_course(request):
         "course": course,
     }
 
-    return render(request, 'student_course.html', contents)
+    return render(request, 'student-course.html', contents)
 
 
 @csrf_exempt
@@ -788,7 +788,7 @@ def student_comment(request):
         "queryset": pagination_object.queryset_page,
         "tpl_pagination_navbar": pagination_object.tpl(),
     }
-    return render(request, 'student_comment.html', contents)
+    return render(request, 'student-comment.html', contents)
 
 
 class StudentResetModelForm(BootStrapModelForm):
@@ -798,7 +798,7 @@ class StudentResetModelForm(BootStrapModelForm):
     )
 
     class Meta:
-        model = models.Staff
+        model = models.Student
         fields = ["password", "confirm_password"]
         widgets = {
             "password": forms.PasswordInput,
@@ -832,7 +832,7 @@ def student_reset(request, studentid):
     # Verifies that the id in the url path is valid
     row_object = models.Student.objects.filter(id=studentid).first()
     if not row_object:
-        return redirect("/student/info/")
+        return redirect("/student-info/")
 
     title = "Reset password for {}".format(row_object.name)
 
@@ -845,6 +845,6 @@ def student_reset(request, studentid):
     form = StudentResetModelForm(data=request.POST, instance=row_object)
     if form.is_valid():
         form.save()
-        return redirect("/student/info")
+        return redirect("/student-info")
 
     return render(request, "reset-password.html", {"form": form, "title": title})
