@@ -1,18 +1,21 @@
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, HttpResponse
 from django import forms
+from django.views.decorators.csrf import csrf_exempt
 
 from rmc import models
 from rmc.utils.bootstrap import BootStrapModelForm
 from rmc.utils.pagination import Pagination
 from rmc.utils.encrypt import md5
-
 from rmc.utils.captcha import check_code
 from io import BytesIO
 
 from pyecharts import options as opts
 from pyecharts.charts import Page, Grid, Bar, Pie
 from pyecharts.globals import ThemeType
+
 
 ########################################
 
@@ -39,6 +42,7 @@ class CourseModelForm(BootStrapModelForm):
     class Meta:
         model = models.Course
         fields = ["name", "associated_degree_programmes"]
+
 
 def course_add(request):
     # (1) Calls the html page and passes the database data if a GET request is received
@@ -102,6 +106,7 @@ def course_edit(request, courseid):
 def course_delete(request, courseid):
     models.Course.objects.filter(id=courseid).delete()
     return redirect("/course-management/")
+
 
 ########################################
 
@@ -213,6 +218,7 @@ def view_reviews_course(request, courseid):
     # (4) Sends the queryset to the front-end
     return render(request, "view-reviews-course.html", contents)
 
+
 ########################################
 
 # def staff_info(request, staffid):
@@ -238,8 +244,8 @@ def captcha(request):
     img.save(stream, "png")
     return HttpResponse(stream.getvalue())
 
-class StudentLoginModelForm(BootStrapModelForm):
 
+class StudentLoginModelForm(BootStrapModelForm):
     # Email and password must not be empty
     email = forms.CharField(
         label="Email",
@@ -268,8 +274,8 @@ class StudentLoginModelForm(BootStrapModelForm):
         pwd = self.cleaned_data.get("password")
         return md5(pwd)
 
-def student_login(request):
 
+def student_login(request):
     if request.method == "GET":
         form = StudentLoginModelForm()
         return render(request, "login.html", {"form": form})
@@ -299,14 +305,14 @@ def student_login(request):
         request.session["info"] = {"id": student_object.id, "email": student_object.email, "name": student_object.name}
 
         # Resets the expiry time (1 day) for re-login
-        request.session.set_expiry(60*60*24)
+        request.session.set_expiry(60 * 60 * 24)
 
-        return redirect("/student/info/")
+        return redirect("/student-info/")
 
     return render(request, "login.html", {"form": form})
 
-class StaffLoginModelForm(BootStrapModelForm):
 
+class StaffLoginModelForm(BootStrapModelForm):
     # Email and password must not be empty
     email = forms.CharField(
         label="Email",
@@ -335,8 +341,8 @@ class StaffLoginModelForm(BootStrapModelForm):
         pwd = self.cleaned_data.get("password")
         return md5(pwd)
 
-def staff_login(request):
 
+def staff_login(request):
     if request.method == "GET":
         form = StaffLoginModelForm()
         return render(request, "staff-login.html", {"form": form})
@@ -366,15 +372,17 @@ def staff_login(request):
         request.session["info"] = {"id": staff_object.id, "email": staff_object.email, "name": staff_object.name}
 
         # Resets the expiry time (1 day) for re-login
-        request.session.set_expiry(60*60*24)
+        request.session.set_expiry(60 * 60 * 24)
 
         return redirect("/course-management/")
 
     return render(request, "staff-login.html", {"form": form})
 
+
 def logout(request):
     request.session.clear()
     return redirect("/login/")
+
 
 def staff_logout(request):
     request.session.clear()
@@ -416,8 +424,8 @@ class StaffResetModelForm(BootStrapModelForm):
 
         return confirm_pwd
 
-def staff_reset(request, staffid):
 
+def staff_reset(request, staffid):
     # Verifies that the id in the url path is valid
     row_object = models.Staff.objects.filter(id=staffid).first()
     if not row_object:
@@ -438,10 +446,10 @@ def staff_reset(request, staffid):
 
     return render(request, "reset-password.html", {"form": form, "title": title})
 
+
 ########################################
 
 class StudentRegistrationModelForm(BootStrapModelForm):
-
     email = forms.CharField(
         label="Email",
         widget=forms.EmailInput,
@@ -479,6 +487,7 @@ class StudentRegistrationModelForm(BootStrapModelForm):
 
         return confirm_pwd
 
+
 def student_registration(request):
     # (1) Calls the html page and passes the database data if a GET request is received
     if request.method == "GET":
@@ -496,13 +505,13 @@ def student_registration(request):
         if not obj_email:
             # Creates a new user
             # fields = ["email", "name", "password", "confirm_password", "gender", "age", "entry_date", "degree_programme"]
-            models.Student.objects.create(email = form.cleaned_data.get("email"),
-                                          name = form.cleaned_data.get("name"),
-                                          password = form.cleaned_data.get("password"),
-                                          gender = form.cleaned_data.get("gender"),
-                                          age = form.cleaned_data.get("age"),
-                                          entry_date = form.cleaned_data.get("entry_date"),
-                                          degree_programme = form.cleaned_data.get("degree_programme"))
+            models.Student.objects.create(email=form.cleaned_data.get("email"),
+                                          name=form.cleaned_data.get("name"),
+                                          password=form.cleaned_data.get("password"),
+                                          gender=form.cleaned_data.get("gender"),
+                                          age=form.cleaned_data.get("age"),
+                                          entry_date=form.cleaned_data.get("entry_date"),
+                                          degree_programme=form.cleaned_data.get("degree_programme"))
 
             return redirect("/login/")
 
@@ -512,8 +521,8 @@ def student_registration(request):
 
     return render(request, "registration.html", {"form": form})
 
-class StaffRegistrationModelForm(BootStrapModelForm):
 
+class StaffRegistrationModelForm(BootStrapModelForm):
     email = forms.CharField(
         label="Email",
         widget=forms.EmailInput,
@@ -551,6 +560,7 @@ class StaffRegistrationModelForm(BootStrapModelForm):
 
         return confirm_pwd
 
+
 def staff_registration(request):
     # (1) Calls the html page and passes the database data if a GET request is received
     if request.method == "GET":
@@ -567,10 +577,10 @@ def staff_registration(request):
 
         if not obj_email:
             # Creates a new staff
-            models.Staff.objects.create(email = form.cleaned_data.get("email"),
-                                          name = form.cleaned_data.get("name"),
-                                          password = form.cleaned_data.get("password"),
-                                          gender = form.cleaned_data.get("gender"))
+            models.Staff.objects.create(email=form.cleaned_data.get("email"),
+                                        name=form.cleaned_data.get("name"),
+                                        password=form.cleaned_data.get("password"),
+                                        gender=form.cleaned_data.get("gender"))
 
             return redirect("/staff-login/")
 
@@ -579,6 +589,7 @@ def staff_registration(request):
             form.add_error("email", "This email already exists.")
 
     return render(request, "staff-registration.html", {"form": form})
+
 
 ########################################
 
@@ -624,7 +635,7 @@ def degree_programme_enrolment(request):
     student_count_list = [student_cs_count, student_ds_count, student_it_count, student_sd_count]
 
     # Creates a grid layout
-    grid = Grid(init_opts=opts.InitOpts(theme=ThemeType.WESTEROS,))
+    grid = Grid(init_opts=opts.InitOpts(theme=ThemeType.WESTEROS, ))
 
     # Creates a bar chart
     bar = Bar()
@@ -637,25 +648,8 @@ def degree_programme_enrolment(request):
     page.add(grid)
     return HttpResponse(page.render_embed())
 
+
 ########################################
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def student_info(request):
@@ -671,7 +665,7 @@ def student_info(request):
         "entry_date": student.entry_date.strftime("%Y-%m-%d"),
         "degree_programme": student.degree_programme.name,
     }
-    return render(request, "student_info.html", {"stu_info": stu_info})
+    return render(request, "student-info.html", {"stu_info": stu_info})
 
 
 class StudentInfoModelForm(BootStrapModelForm):
@@ -680,70 +674,177 @@ class StudentInfoModelForm(BootStrapModelForm):
         fields = ['name', 'gender', 'age']
 
 
-def user_edit(request):
+def student_edit(request):
     """ Edit Student Profile """
     info = request.session["info"]
     student = models.Student.objects.filter(id=info['id']).first()
 
     if request.method == "GET":
-        # 根据ID去数据库获取要编辑的那一行数据（对象）
+        # Retrieve the row of data to be edited from the database based on the ID
         form = StudentInfoModelForm(instance=student)
 
-        return render(request, 'student_edit.html', {"form": form})
+        return render(request, 'student-edit.html', {"form": form})
 
+    # Get the user input (a ModelForm instance) from the front-end POST request
     form = StudentInfoModelForm(data=request.POST, instance=student)
     if form.is_valid():
-        # 默认保存的是用户输入的所有数据，如果想要再用户输入以外增加一点值
-        # form.instance.字段名 = 值
         form.save()
-        return redirect('/student/info/')
-    return render(request, 'student_edit.html', {"form": form})
+        return redirect('/student-info/')
+    return render(request, 'student-edit.html', {"form": form})
 
 
-# class LoginForm(BootStrapForm):
-#     email = forms.CharField(
-#         label="email",
-#         widget=forms.TextInput,
-#         required=True
-#     )
-#     password = forms.CharField(
-#         label="password",
-#         widget=forms.PasswordInput(render_value=True),
-#         required=True
-#     )
-#
-#     # def clean_password(self):
-#     #     pwd = self.cleaned_data.get("password")
-#     #     return md5(pwd)
+class AddCommentModelForm(BootStrapModelForm):
+    # Restrict the score input range to 1-10
+    overall_score = forms.IntegerField(
+        label="Overall Score",
+        validators=[MinValueValidator(1), MaxValueValidator(10)],
+    )
+    easiness_score = forms.IntegerField(
+        label="Easiness Score",
+        validators=[MinValueValidator(1), MaxValueValidator(10)],
+    )
+    interest_score = forms.IntegerField(
+        label="Interest Score",
+        validators=[MinValueValidator(1), MaxValueValidator(10)],
+    )
+    usefulness_score = forms.IntegerField(
+        label="Usefulness Score",
+        validators=[MinValueValidator(1), MaxValueValidator(10)],
+    )
+    teaching_score = forms.IntegerField(
+        label="Teaching Score",
+        validators=[MinValueValidator(1), MaxValueValidator(10)],
+    )
+
+    class Meta:
+        model = models.CourseReview
+        exclude = ['student_id', 'course_id']
+        # Set the comment field to a 10 row text area
+        widgets = {
+            'comment': forms.Textarea(attrs={
+                "rows": 10,
+            })
+        }
 
 
-# def login(request):
-#     """ 登录 """
-#     if request.method == "GET":
-#         form = LoginForm()
-#         return render(request, 'login.html', {'form': form})
-#
-#     form = LoginForm(data=request.POST)
-#     if form.is_valid():
-#
-#         # 去数据库校验用户名和密码是否正确，获取用户对象、None
-#         user_object = models.Student.objects.filter(**form.cleaned_data).first()
-#         if not user_object:
-#             form.add_error("password", "email or password error")
-#             return render(request, 'login.html', {'form': form})
-#
-#         # 用户名和密码正确
-#         # 网站生成随机字符串; 写到用户浏览器的cookie中；在写入到session中；
-#         request.session["info"] = {'id': user_object.id, 'email': user_object.email}
-#         # session可以保存7天
-#         request.session.set_expiry(60 * 60 * 24 * 7)
-#
-#         return redirect("/student/info/")
-#
-#     return render(request, 'login.html', {'form': form})
+def student_course(request):
+    """ Student Course """
+    stu_id = request.session["info"]['id']
+    stu_prog = models.Student.objects.get(id=stu_id).degree_programme.name
+
+    # Get all courses by name of degree_programme
+    degree_id = models.DegreeProgramme.objects.get(name=stu_prog).id
+    queryset = models.Course.objects.filter(associated_degree_programmes=degree_id)
+    for i in queryset:
+        i.isComment = 0
+        isComment = models.CourseReview.objects.filter(student_id=stu_id, course_id=i.id).first()
+        if isComment is not None:
+            i.isComment = 1
+
+    pagination_object = Pagination(request, queryset)
+
+    course = AddCommentModelForm()
+    contents = {
+        "queryset": pagination_object.queryset_page,
+        "tpl_pagination_navbar": pagination_object.tpl(),
+        "course": course,
+    }
+
+    return render(request, 'student-course.html', contents)
 
 
+@csrf_exempt
+def student_addcomment(request):
+    """ Student Add Comment """
+    # Get the student ID and course ID from the front-end request
+    stu_id = request.session["info"]['id']
+    uid = request.GET.get("uid")
+
+    # Check if the student has already commented on the course
+    row_object = models.CourseReview.objects.filter(student_id=stu_id, course_id=uid).first()
+    if row_object is not None:
+        return JsonResponse({"status": False, 'tips': "You have already commented"})
+    form = AddCommentModelForm(data=request.POST)
+
+    if form.is_valid():
+        # Get the student and course object from database based on the ID
+        stu_obj = models.Student.objects.filter(id=stu_id).first()
+        uid_obj = models.Course.objects.filter(id=uid).first()
+        form.instance.student_id = stu_obj
+        form.instance.course_id = uid_obj
+        form.save()
+        return JsonResponse({"status": True})
+
+    return JsonResponse({"status": False, 'error': form.errors})
 
 
+def student_comment(request):
+    """ Show Student Comment """
+    # Retrieve the comment data from the database based on the student ID
+    stu_id = request.session["info"]['id']
+    queryset = models.CourseReview.objects.filter(student_id=stu_id)
+    pagination_object = Pagination(request, queryset)
+    contents = {
+        "queryset": pagination_object.queryset_page,
+        "tpl_pagination_navbar": pagination_object.tpl(),
+    }
+    return render(request, 'student-comment.html', contents)
 
 
+class StudentResetModelForm(BootStrapModelForm):
+    confirm_password = forms.CharField(
+        label="Confirm password",
+        widget=forms.PasswordInput,
+    )
+
+    class Meta:
+        model = models.Student
+        fields = ["password", "confirm_password"]
+        widgets = {
+            "password": forms.PasswordInput,
+            "required": True,
+        }
+
+    # Encrypts the password first
+    def clean_password(self):
+        pwd = self.cleaned_data.get("password")
+        md5_pwd = md5(pwd)
+
+        # Compares the user input with the existing password
+        # and report an error if it matches, otherwise save the user input as the new password
+        exists = models.Student.objects.filter(id=self.instance.pk, password=md5_pwd).exists()
+        if exists:
+            raise ValidationError("The new password should not be the same as the old one.")
+
+        return md5_pwd
+
+    # Then, verifies that the password entered twice is the same
+    def clean_confirm_password(self):
+        pwd = self.cleaned_data.get("password")
+        confirm_pwd = md5(self.cleaned_data.get("confirm_password"))
+        if confirm_pwd != pwd:
+            raise ValidationError("The confirm password does not match the password.")
+
+        return confirm_pwd
+
+
+def student_reset(request, studentid):
+    # Verifies that the id in the url path is valid
+    row_object = models.Student.objects.filter(id=studentid).first()
+    if not row_object:
+        return redirect("/student-info/")
+
+    title = "Reset password for {}".format(row_object.name)
+
+    # Returns input boxes according to the database table structure
+    if request.method == "GET":
+        form = StudentResetModelForm()
+        return render(request, "reset-password.html", {"form": form, "title": title})
+
+    # Verifies the user input and saves
+    form = StudentResetModelForm(data=request.POST, instance=row_object)
+    if form.is_valid():
+        form.save()
+        return redirect("/student-info")
+
+    return render(request, "reset-password.html", {"form": form, "title": title})

@@ -9,6 +9,7 @@ urlpatterns = [
     ########################################
 
     path("<int:staffid>/staff-reset/", views.staff_reset),
+    path("<int:studentid>/student-reset/", views.student_reset),
 
     ########################################
 
@@ -44,7 +45,10 @@ urlpatterns = [
 
     ########################################
 
-    path("student/info/", views.student_info),
-    path("student/edit/", views.user_edit),
+    path("student-info/", views.student_info),
+    path("student-edit/", views.student_edit),
+    path('student-course/', views.student_course),
+    path('student-addcomment/', views.student_addcomment),
+    path('student-comment/', views.student_comment),
 
 ]
