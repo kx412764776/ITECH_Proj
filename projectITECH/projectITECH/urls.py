@@ -48,7 +48,7 @@ urlpatterns = [
     path("student-info/", views.student_info),
     path("student-edit/", views.student_edit),
     path('student-course/', views.student_course),
-    path('student-addcomment/', views.student_addcomment),
+    path('student/addcomment/', views.student_addcomment),
     path('student-comment/', views.student_comment),
 
 ]

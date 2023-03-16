@@ -798,7 +798,7 @@ class StudentResetModelForm(BootStrapModelForm):
     )
 
     class Meta:
-        model = models.Student
+        model = models.Staff
         fields = ["password", "confirm_password"]
         widgets = {
             "password": forms.PasswordInput,
