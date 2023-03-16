@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from rmc import views
+from rmc.views import staff, student, login, register
 
 
 urlpatterns = [
@@ -8,47 +8,54 @@ urlpatterns = [
 
     ########################################
 
-    path("<int:staffid>/staff-reset/", views.staff_reset),
-    path("<int:studentid>/student-reset/", views.student_reset),
+    # Reset password
+    path("<int:staffid>/staff-reset/", staff.staff_reset),
+
+    path("<int:studentid>/student-reset/", student.student_reset),
 
     ########################################
 
-    path("course-management/", views.course_management),
-    path("course-add/", views.course_add),
-    path("<int:courseid>/course-edit/", views.course_edit),
-    path("<int:courseid>/course-delete/", views.course_delete),
+    # Course management
+    path("course-management/", staff.course_management),
+    path("course-add/", staff.course_add),
+    path("<int:courseid>/course-edit/", staff.course_edit),
+    path("<int:courseid>/course-delete/", staff.course_delete),
 
     ########################################
 
-    path("student-list/", views.student_list),
-    path("<int:studentid>/view-reviews-student/", views.view_reviews_student),
+    # View reviews
+    path("student-list/", staff.student_list),
+    path("<int:studentid>/view-reviews-student/", staff.view_reviews_student),
 
-    path("course-list/", views.course_list),
-    path("<int:courseid>/view-reviews-course/", views.view_reviews_course),
-
-    ########################################
-
-    path("captcha/", views.captcha),
-    path("login/", views.student_login),
-    path("staff-login/", views.staff_login),
-    path("logout/", views.logout),
-    path("staff-logout/", views.staff_logout),
-
-    path("registration/", views.student_registration),
-    path("staff-registration/", views.staff_registration),
+    path("course-list/", staff.course_list),
+    path("<int:courseid>/view-reviews-course/", staff.view_reviews_course),
 
     ########################################
 
-    path("data-visualisation/", views.data_visualisation),
-    path("data-visualisation/gender-distribution-socs/", views.gender_distribution_socs),
-    path("data-visualisation/degree-programme-enrolment/", views.degree_programme_enrolment),
+    # Data visualisation
+    path("data-visualisation/", staff.data_visualisation),
+    path("data-visualisation/gender-distribution-socs/", staff.gender_distribution_socs),
+    path("data-visualisation/degree-programme-enrolment/", staff.degree_programme_enrolment),
 
     ########################################
 
-    path("student-info/", views.student_info),
-    path("student-edit/", views.student_edit),
-    path('student-course/', views.student_course),
-    path('student/addcomment/', views.student_addcomment),
-    path('student-comment/', views.student_comment),
+    path("captcha/", login.captcha),
+    path("login/", login.student_login),
+    path("staff-login/", login.staff_login),
+    path("logout/", login.logout),
+    path("staff-logout/", login.staff_logout),
+
+    ########################################
+
+    path("registration/", register.student_registration),
+    path("staff-registration/", register.staff_registration),
+
+    ########################################
+
+    path("student-info/", student.student_info),
+    path("student-edit/", student.student_edit),
+    path('student-course/', student.student_course),
+    path('student/addcomment/', student.student_addcomment),
+    path('student-comment/', student.student_comment),
 
 ]
