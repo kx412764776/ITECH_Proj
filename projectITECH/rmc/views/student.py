@@ -198,15 +198,15 @@ def student_reset(request, studentid):
     # Returns input boxes according to the database table structure
     if request.method == "GET":
         form = StudentResetModelForm()
-        return render(request, "reset-password.html", {"form": form, "title": title})
+        return render(request, "student-reset.html", {"form": form, "title": title})
 
     # Verifies the user input and saves
     form = StudentResetModelForm(data=request.POST, instance=row_object)
     if form.is_valid():
         form.save()
-        return redirect("/student-info")
+        return redirect("/student-info/")
 
-    return render(request, "reset-password.html", {"form": form, "title": title})
+    return render(request, "student-reset.html", {"form": form, "title": title})
 
 
 

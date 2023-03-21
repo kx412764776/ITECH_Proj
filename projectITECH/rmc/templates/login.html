@@ -5,43 +5,8 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1-dist/css/bootstrap.min.css' %}">
-    <style>
-        .login-box {
-            width: 400px;
-            height: 450px;
-            border: 1px solid grey;
-            border-radius: 5px;
+    <link rel="stylesheet" href="{% static 'css/login-style.css' %}">
 
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 200px;
-            margin-bottom: 200px;
-
-            padding: 20px 40px;
-
-            box-shadow: 5px 5px 20px grey;
-        }
-
-        .login-box h2 {
-            text-align: center;
-        }
-
-        .login-box button {
-            margin-top: 15px;
-        }
-
-        .hyperlink{
-            margin-top: 15px;
-        }
-
-        .register{
-            float: left;
-        }
-
-        .staff-login{
-            float: right;
-        }
-    </style>
 </head>
 <body>
 <div class="login-box">
@@ -71,15 +36,12 @@
                 </div>
             </div>
         </div>
-
         <button type="submit" class="btn btn-primary">Login</button>
-
     </form>
-
-    <div class="hyperlink">
+     <div class="hyperlink">
         <span class="register"><a href="/registration/">Register</a></span>
         <span class="staff-login"><a href="/staff-login/">Staff Login</a></span>
-    </div>
+     </div>
 </div>
 
 </body>
