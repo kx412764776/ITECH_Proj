@@ -1,10 +1,8 @@
-from django.contrib import admin
 from django.urls import path
 from rmc.views import staff, student, login, register
 
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
 
     ########################################
 

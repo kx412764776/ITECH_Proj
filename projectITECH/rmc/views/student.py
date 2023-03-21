@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.http import JsonResponse
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect
 from django import forms
 from django.views.decorators.csrf import csrf_exempt
 

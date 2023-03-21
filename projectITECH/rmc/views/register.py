@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect
 from django import forms
 
 from rmc import models
