@@ -10,7 +10,7 @@ host = 'http://127.0.0.1:8000'
 
 
 def customer_sqllite_operation(sql_statement, limit_one=True):
-    '''sqllite自定义查询'''
+    '''sqllite custom query'''
 
     def dict_factory(cursor, row):
         d = {}
@@ -20,7 +20,7 @@ def customer_sqllite_operation(sql_statement, limit_one=True):
 
     db_path = connection.settings_dict['NAME']
     with sqlite3.connect(db_path, uri=True) as conn:
-        # 使得查询结果以字典形式返回
+        # Make the query return as a dictionary
         conn.row_factory = dict_factory
         c = conn.cursor()
         result = c.execute(sql_statement)
@@ -33,26 +33,26 @@ def customer_sqllite_operation(sql_statement, limit_one=True):
 
 
 def out_html_text(text):
-    '''将字符串转换为html字符'''
+    '''Convert string to html characters'''
     return html.escape(text)
 
 
 def html_text_to_text(html_text):
-    '''将html字符转换字符串'''
+    '''Convert html characters to strings''''
     h = html.parser
     return h.unescape(html_text)
 
 
 class TestCaseStudentModel(object):
     """
-    模型测试
+    Model testing
     """
 
     student_name = 'test'
 
     # print("degree_programme_names:",degree_programme_names)
 
-    @pytest.mark.skip('有外键的model暂时无法完成测试，使用@pytest.mark.django_db后查不到数据')
+    @pytest.mark.skip('A mod with a foreign key is temporarily unable to complete the test, use @pytest.mark.django_db cant find data')
     def test_student_model(self):
         self.student_name += '1'
         # degree_programme=DegreeProgramme.objects.
@@ -66,11 +66,11 @@ class TestCaseStudentModel(object):
             query_result = Student.objects.get(name=self.student_name)
             assert query_result
 
-    @pytest.mark.skip('有外键的model暂时无法完成测试，使用@pytest.mark.django_db后查不到数据')
+    @pytest.mark.skip('A mod with a foreign key is temporarily unable to complete the test, use @pytest.mark.django_db cant find data')
     def test_course_model(self):
         pass
 
-    @pytest.mark.skip('有外键的model暂时无法完成测试，使用@pytest.mark.django_db后查不到数据')
+    @pytest.mark.skip('A mod with a foreign key is temporarily unable to complete the test, use @pytest.mark.django_db cant find data')
     def test_course_review_model(self):
         pass
 
@@ -91,7 +91,7 @@ class TestCaseStudentModel(object):
 
 
 class TestCaseStudentView(object):
-    '''测试学生端view'''
+    '''Testing the student-side view'''
 
     @pytest.mark.parametrize('gender,name,age', ([1, 'Ruijun+Jiang2', -1], [2, 'test', 20], [1, 'Ruijun+Jiang', 100]))
     @pytest.mark.run(order=1)
@@ -158,7 +158,7 @@ class TestCaseStudentView(object):
 
 
 class TestCaseStaffView(object):
-    '''测试管理端view'''
+    '''Test Manager view'''
 
     @pytest.mark.run(order=1)
     def test_view_data_visualisation_gender_distribution_socs_success(self, staff_login):
