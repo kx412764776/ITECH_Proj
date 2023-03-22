@@ -37,6 +37,7 @@ urlpatterns = [
 
     ########################################
 
+    # Login
     path("captcha/", login.captcha),
     path("login/", login.student_login),
     path("staff-login/", login.staff_login),
@@ -45,6 +46,7 @@ urlpatterns = [
 
     ########################################
 
+    # Registration
     path("registration/", register.student_registration),
     path("staff-registration/", register.staff_registration),
 
