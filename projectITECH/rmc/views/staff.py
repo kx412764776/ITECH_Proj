@@ -11,6 +11,9 @@ from pyecharts import options as opts
 from pyecharts.charts import Page, Grid, Bar, Pie
 from pyecharts.globals import ThemeType
 
+from django.views.decorators.csrf import csrf_exempt
+import json
+
 
 ########################################
 
@@ -253,11 +256,35 @@ class StaffResetModelForm(BootStrapModelForm):
         return confirm_pwd
 
 
+# def staff_reset(request, staffid):
+#     # Verifies that the id in the url path is valid
+#     row_object = models.Staff.objects.filter(id=staffid).first()
+#     if not row_object:
+#         return redirect("/course-management")
+#
+#     title = "Reset password for {}".format(row_object.name)
+#
+#     # Returns input boxes according to the database table structure
+#     if request.method == "GET":
+#         form = StaffResetModelForm()
+#         return render(request, "reset-password.html", {"form": form, "title": title})
+#
+#     # Verifies the user input and saves
+#     form = StaffResetModelForm(data=request.POST, instance=row_object)
+#     if form.is_valid():
+#         form.save()
+#         return redirect("/course-management/")
+#
+#     return render(request, "reset-password.html", {"form": form, "title": title})
+
+
+# Reset password using AJAX
+@csrf_exempt
 def staff_reset(request, staffid):
     # Verifies that the id in the url path is valid
     row_object = models.Staff.objects.filter(id=staffid).first()
     if not row_object:
-        return redirect("/course-management")
+        return redirect("/data-visualisation")
 
     title = "Reset password for {}".format(row_object.name)
 
@@ -268,11 +295,16 @@ def staff_reset(request, staffid):
 
     # Verifies the user input and saves
     form = StaffResetModelForm(data=request.POST, instance=row_object)
+    # print(request.POST)
+
     if form.is_valid():
         form.save()
-        return redirect("/course-management/")
 
-    return render(request, "reset-password.html", {"form": form, "title": title})
+        data_dict = {"status": True}
+        return HttpResponse(json.dumps(data_dict))
+
+    data_dict = {"status": False, "error": form.errors}
+    return HttpResponse(json.dumps(data_dict, ensure_ascii=False))
 
 
 ########################################

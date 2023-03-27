@@ -51,7 +51,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">{{ request.session.info.name }}<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="/{{ request.session.info.id }}/staff-reset/">Password Reset</a></li>
+                        <li><a href="/{{ request.session.info.id }}/staff-reset/">Password Reset (AJAX)</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="/staff-logout/">Logout</a></li>
                     </ul>
@@ -70,6 +70,7 @@
 
 <script src="{% static 'js/jquery-3.6.3.min.js' %}"></script>
 <script src="{% static 'plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js' %}"></script>
+{% block js %}{% endblock %}
 
 </body>
 </html>
