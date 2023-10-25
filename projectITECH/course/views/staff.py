@@ -2,10 +2,10 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, HttpResponse
 from django import forms
 
-from rmc import models
-from rmc.utils.bootstrap import BootStrapModelForm
-from rmc.utils.pagination import Pagination
-from rmc.utils.encrypt import md5
+from course import models
+from course.utils.bootstrap import BootStrapModelForm
+from course.utils.pagination import Pagination
+from course.utils.encrypt import md5
 
 from pyecharts import options as opts
 from pyecharts.charts import Page, Grid, Bar, Pie

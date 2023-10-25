@@ -76,7 +76,7 @@ class Migration(migrations.Migration):
                 (
                     "programme_courses",
                     models.ManyToManyField(
-                        related_name="programme_courses", to="rmc.course"
+                        related_name="programme_courses", to="course.course"
                     ),
                 ),
             ],
@@ -107,7 +107,7 @@ class Migration(migrations.Migration):
                     "degree_programme",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="rmc.degreeprogramme",
+                        to="course.degreeprogramme",
                     ),
                 ),
             ],
@@ -136,13 +136,13 @@ class Migration(migrations.Migration):
                 (
                     "course_id",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="rmc.course"
+                        on_delete=django.db.models.deletion.CASCADE, to="course.course"
                     ),
                 ),
                 (
                     "student_id",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="rmc.student"
+                        on_delete=django.db.models.deletion.CASCADE, to="course.student"
                     ),
                 ),
             ],
@@ -151,7 +151,7 @@ class Migration(migrations.Migration):
             model_name="course",
             name="associated_degree_programme",
             field=models.ManyToManyField(
-                related_name="associated_degree_programme", to="rmc.degreeprogramme"
+                related_name="associated_degree_programme", to="course.degreeprogramme"
             ),
         ),
     ]

@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("rmc", "0005_staff_email_student_email"),
+        ("course", "0005_staff_email_student_email"),
     ]
 
     operations = [

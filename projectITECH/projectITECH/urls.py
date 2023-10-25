@@ -1,5 +1,5 @@
 from django.urls import path
-from rmc.views import staff, student, login, register
+from course.views import login, register, staff, student
 
 
 urlpatterns = [
@@ -55,7 +55,7 @@ urlpatterns = [
     path("student-info/", student.student_info),
     path("student-edit/", student.student_edit),
     path('student-course/', student.student_course),
-    path('student/addcomment/', student.student_addcomment),
+    path('student/addcomment/', student.student_add_comment),
     path('student-comment/', student.student_comment),
 
 ]

@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    "rmc.apps.RmcConfig",
+    "course.apps.CourseAssessmentConfig",
 ]
 
 MIDDLEWARE = [
@@ -48,7 +48,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 
-    "rmc.middleware.auth.AuthMiddleware",
+    "course.middleware.auth.AuthMiddleware",
 ]
 
 ROOT_URLCONF = "projectITECH.urls"

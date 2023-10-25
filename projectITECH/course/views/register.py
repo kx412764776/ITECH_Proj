@@ -2,10 +2,10 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django import forms
 
-from rmc import models
-from rmc.utils.bootstrap import BootStrapModelForm
+from course import models
+from course.utils.bootstrap import BootStrapModelForm
 
-from rmc.utils.encrypt import md5
+from course.utils.encrypt import md5
 
 
 ########################################

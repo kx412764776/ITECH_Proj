@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("rmc", "0004_alter_degreeprogramme_name_and_more"),
+        ("course", "0004_alter_degreeprogramme_name_and_more"),
     ]
 
     operations = [

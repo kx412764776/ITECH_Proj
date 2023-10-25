@@ -2,9 +2,9 @@
 import sqlite3
 import pytest
 from django.db import connection
-from rmc.models import *
+from course.models import *
 import html
-from rmc.utils.encrypt import md5
+from course.utils.encrypt import md5
 
 host = 'http://127.0.0.1:8000'
 
@@ -38,7 +38,7 @@ def out_html_text(text):
 
 
 def html_text_to_text(html_text):
-    '''Convert html characters to strings''''
+    '''Convert html characters to strings'''
     h = html.parser
     return h.unescape(html_text)
 
@@ -56,7 +56,7 @@ class TestCaseStudentModel(object):
     def test_student_model(self):
         self.student_name += '1'
         # degree_programme=DegreeProgramme.objects.
-        sql_statement = '''select * from rmc_degreeprogramme '''
+        sql_statement = '''select * from course_degreeprogramme '''
         degree_programme_names = customer_sqllite_operation(sql_statement=sql_statement, limit_one=False)
         for degree_programme in degree_programme_names:
             kwargs = {'email': f'{self.student_name}@qq.com', 'name': self.student_name, 'password': md5('test123456'),
@@ -207,7 +207,7 @@ class TestCaseStaffView(object):
     def test_view_course_edit_success(self, staff_login, course_name, associated_degree_programmes):
         session, headers, csrf_token_form_data = staff_login
         new_course_name = course_name + '_new'
-        sql_statement = f'select id from rmc_course where name in ("{course_name}","{new_course_name}") '
+        sql_statement = f'select id from course_course where name in ("{course_name}","{new_course_name}") '
         course_id = customer_sqllite_operation(sql_statement=sql_statement, limit_one=True)
         if course_id:
             course_id = course_id.get('id')
@@ -223,7 +223,7 @@ class TestCaseStaffView(object):
     def test_view_course_delete_success(self, staff_login, course_name):
         session, headers, csrf_token_form_data = staff_login
         new_course_name = course_name + '_new'
-        sql_statement = f'select id from rmc_course where name in ("{course_name}","{new_course_name}") '
+        sql_statement = f'select id from course_course where name in ("{course_name}","{new_course_name}") '
         course_id = customer_sqllite_operation(sql_statement=sql_statement, limit_one=True)
         if course_id:
             course_id = course_id.get('id')
@@ -252,7 +252,7 @@ class TestCaseStaffView(object):
     def test_view_view_reviews_course_success(self, staff_login, course_name, page):
         session, headers, csrf_token_form_data = staff_login
         new_course_name = course_name + '_new'
-        sql_statement = f'select id from rmc_course where name in ("{course_name}","{new_course_name}") '
+        sql_statement = f'select id from course_course where name in ("{course_name}","{new_course_name}") '
         course_id = customer_sqllite_operation(sql_statement=sql_statement, limit_one=True)
         if course_id:
             course_id = course_id.get('id')
@@ -282,7 +282,7 @@ class TestCaseStaffView(object):
     def test_view_view_reviews_student_page_success(self, staff_login, student_name, page):
         session, headers, csrf_token_form_data = staff_login
         new_student_name = student_name + '_new'
-        sql_statement = f'select id from rmc_student where name in ("{student_name}","{new_student_name}") '
+        sql_statement = f'select id from course_student where name in ("{student_name}","{new_student_name}") '
         course_id = customer_sqllite_operation(sql_statement=sql_statement, limit_one=True)
         data = f'page={page}'
         if course_id:
@@ -301,7 +301,7 @@ class TestCaseStaffView(object):
     def test_view_view_reviews_student_failed(self, staff_login, student_name):
         session, headers, csrf_token_form_data = staff_login
         new_student_name = student_name + '_new'
-        sql_statement = f'select id from rmc_student where name in ("{student_name}","{new_student_name}") '
+        sql_statement = f'select id from course_student where name in ("{student_name}","{new_student_name}") '
         course_id = customer_sqllite_operation(sql_statement=sql_statement, limit_one=True)
         if course_id:
             course_id = course_id.get('id')
@@ -317,7 +317,7 @@ class TestCaseStaffView(object):
     def test_view_staff_password_reset(self, staff_login, staff_login_account):
         session, headers, csrf_token_form_data = staff_login
         email, password = staff_login_account
-        sql_statement = f''' select id,password from rmc_staff where email = "{email}" '''
+        sql_statement = f''' select id,password from course_staff where email = "{email}" '''
         staff_user_id_password = customer_sqllite_operation(sql_statement=sql_statement, limit_one=True)
         if staff_user_id_password:
             staff_user_id = staff_user_id_password.get('id')
@@ -325,7 +325,7 @@ class TestCaseStaffView(object):
             new_password = password + '1'
             data = f'{csrf_token_form_data}&password={new_password}&confirm_password={new_password}'
             response = session.post(url=f'{host}/{staff_user_id}/staff-reset/', data=data, headers=headers)
-            sql_statement = f''' select password from rmc_staff where id = {staff_user_id} '''
+            sql_statement = f''' select password from course_staff where id = {staff_user_id} '''
             new_encry_password = customer_sqllite_operation(sql_statement=sql_statement, limit_one=True).get('password')
             assert response.status_code == 200
             assert md5(data_string=password) == old_encry_password
@@ -333,7 +333,7 @@ class TestCaseStaffView(object):
             assert new_encry_password != old_encry_password
             data = f'{csrf_token_form_data}&password={password}&confirm_password={password}'
             response = session.post(url=f'{host}/{staff_user_id}/staff-reset/', data=data, headers=headers)
-            sql_statement = f''' select password from rmc_staff where id = {staff_user_id} '''
+            sql_statement = f''' select password from course_staff where id = {staff_user_id} '''
             reset_encry_password = customer_sqllite_operation(sql_statement=sql_statement, limit_one=True).get(
                 'password')
             assert response.status_code == 200

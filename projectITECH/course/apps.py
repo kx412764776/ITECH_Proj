@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class RmcConfig(AppConfig):
+class CourseAssessmentConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "rmc"
+    name = "course"

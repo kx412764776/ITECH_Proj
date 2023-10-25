@@ -5,10 +5,10 @@ from django.shortcuts import render, redirect
 from django import forms
 from django.views.decorators.csrf import csrf_exempt
 
-from rmc import models
-from rmc.utils.bootstrap import BootStrapModelForm
-from rmc.utils.pagination import Pagination
-from rmc.utils.encrypt import md5
+from course import models
+from course.utils.bootstrap import BootStrapModelForm
+from course.utils.pagination import Pagination
+from course.utils.encrypt import md5
 
 
 def student_info(request):
@@ -113,7 +113,7 @@ def student_course(request):
 
 
 @csrf_exempt
-def student_addcomment(request):
+def student_add_comment(request):
     """ Student Add Comment """
     # Get the student ID and course ID from the front-end request
     stu_id = request.session["info"]['id']

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from rmc.models import Student, Course, CourseReview, DegreeProgramme, Staff
+from course.models import Student, Course, CourseReview, DegreeProgramme, Staff
 
 
 admin.site.register(Student)

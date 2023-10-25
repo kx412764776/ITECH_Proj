@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("rmc", "0008_alter_degreeprogramme_programme_courses"),
+        ("course", "0008_alter_degreeprogramme_programme_courses"),
     ]
 
     operations = [
@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="associated_degree_programme",
-                to="rmc.degreeprogramme",
+                to="course.degreeprogramme",
             ),
         ),
     ]

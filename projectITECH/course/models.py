@@ -1,7 +1,7 @@
 from django.db import models
 
 
-# (1) Table rmc_student
+# (1) Table student
 class Student(models.Model):
     email = models.CharField(verbose_name="Email", max_length=64, null=True, blank=True)
     name = models.CharField(verbose_name="Name", max_length=32)
@@ -19,13 +19,13 @@ class Student(models.Model):
     degree_programme = models.ForeignKey(to="DegreeProgramme", to_field="name", on_delete=models.CASCADE)
 
 
-# (2) Table rmc_course
+# (2) Table course
 class Course(models.Model):
     name = models.CharField(verbose_name="Name", max_length=64)
     associated_degree_programmes = models.ManyToManyField(to="DegreeProgramme", related_name="degree_programme_courses")
 
 
-# (3) Table rmc_coursereview
+# (3) Table coursereview
 class CourseReview(models.Model):
     student_id = models.ForeignKey(to="Student", to_field="id", on_delete=models.CASCADE)
     course_id = models.ForeignKey(to="Course", to_field="id", on_delete=models.CASCADE)
@@ -39,7 +39,7 @@ class CourseReview(models.Model):
     comment = models.CharField(max_length=300, default='')
 
 
-# (4) Table rmc_degreeprogramme
+# (4) Table degreeprogramme
 class DegreeProgramme(models.Model):
     name = models.CharField(verbose_name="Degree programme name", max_length=32, unique=True)
     level_choices = (
@@ -56,7 +56,7 @@ class DegreeProgramme(models.Model):
         return self.name
 
 
-# (5) Table rmc_staff
+# (5) Table staff
 class Staff(models.Model):
     email = models.CharField(verbose_name="Email", max_length=64, null=True, blank=True)
     name = models.CharField(verbose_name="Name", max_length=32)

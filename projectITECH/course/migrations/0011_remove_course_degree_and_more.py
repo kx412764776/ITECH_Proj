@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("rmc", "0010_rename_associated_degree_programme_course_degree"),
+        ("course", "0010_rename_associated_degree_programme_course_degree"),
     ]
 
     operations = [
@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             model_name="course",
             name="associated_degree_programme",
             field=models.ManyToManyField(
-                related_name="associated_degree_programme", to="rmc.degreeprogramme"
+                related_name="associated_degree_programme", to="course.degreeprogramme"
             ),
         ),
     ]
