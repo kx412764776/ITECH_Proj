@@ -1,14 +1,16 @@
-from django.utils.deprecation import MiddlewareMixin
+from django.middleware.security import SecurityMiddleware
 from django.shortcuts import redirect
 
-class AuthMiddleware(MiddlewareMixin):
+
+class AuthMiddleware(SecurityMiddleware):
 
     def process_request(self, request):
 
         # (1) If requesting the login page, continue
         #     Gets the URL of the user request, request.path_info
         # if request.path_info == "/login/":
-        if request.path_info in ["/login/", "/staff-login/", "/admin/", "/registration/", "/staff-registration/", "/captcha/",]:
+        if request.path_info in ["/login/", "/staff-login/", "/admin/", "/registration/", "/staff-registration/",
+                                 "/captcha/", ]:
             return
 
         # (2) If the session info can be found in the database,
